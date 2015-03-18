@@ -168,33 +168,34 @@ class MinimaxAgent(MultiAgentSearchAgent):
             return self.minValue(state, i)
             
     def maxValue(self, state, i):
-        v = (-float("inf"), None)
+        max_v = (-float("inf"), None)
         agentIndex = i % self.numAgents
         actions = state.getLegalActions(agentIndex)
         #print actions
         if len(actions) == 0:
             return (self.evaluationFunction(state), None)
         else:
-            successors = [(state.generateSuccessor(agentIndex, a), a) \
-                        for a in actions]
-            for s in successors:
-                v = max(v, self.value(s[0], i+1), key=lambda x: x[0])
-            print v
-            return v
+            for a in actions:
+                successor = state.generateSuccessor(agentIndex, a)
+                v  = self.value(successor, i+1)
+                if v[0] > max_v[0]:
+                    max_v = (v[0], a)
+        return max_v
         
     def minValue(self, state, i):
-        v = (float("inf"), None)
+        min_v = (float("inf"), None)
         agentIndex = i % self.numAgents
         actions = state.getLegalActions(agentIndex)
         #print actions
         if len(actions) == 0:
             return (self.evaluationFunction(state), None)
         else:
-            successors = [(state.generateSuccessor(agentIndex, a), a) \
-                        for a in actions]
-            for s in successors:
-                v = min(v, self.value(s[0], i+1), key=lambda x: x[0])
-            return v
+            for a in actions:
+                successor = state.generateSuccessor(agentIndex, a)
+                v  = self.value(successor, i+1)
+                if v[0] < min_v[0]:
+                    min_v = (v[0], a)
+        return min_v
         
        
 class AlphaBetaAgent(MultiAgentSearchAgent):
