@@ -217,7 +217,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         #print res
         return res[1]
     
-    def value(self, state, i=0, alpha=(-float('inf'), None), beta=(float('inf'), None)):     
+    def value(self, state, i=0, alpha=-float('inf'), beta=float('inf')):     
         #print i, self.numAgents, self.numLayers
         agentIndex = i % self.numAgents
         if i == self.numLayers or state.isLose() or state.isWin():
@@ -243,9 +243,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 v  = self.value(successor, i+1, alpha, beta)
                 if v[0] > max_v[0]:
                     max_v = (v[0], a)
-                if max_v[0] > beta[0]:
+                if max_v[0] > beta:
                     return max_v
-                alpha = max(alpha, max_v, key=lambda x: x[0])
+                alpha = max(alpha, max_v[0])
         return max_v
         
     def minValue(self, state, i, alpha, beta):
@@ -261,9 +261,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 v  = self.value(successor, i+1, alpha, beta)
                 if v[0] < min_v[0]:
                     min_v = (v[0], a)
-                if min_v[0] < alpha[0]:
+                if min_v[0] < alpha:
                     return min_v
-                beta = min(beta, min_v, key=lambda x: x[0])
+                beta = min(beta, min_v[0])
         return min_v
     
     
