@@ -338,7 +338,16 @@ def betterEvaluationFunction(currentGameState):
       DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+        x, y = newPos
+        foodList = map(lambda f: util.manhattanDistance(newPos,f), newFood)
+        #print foodList
+        #print min(foodList)
+        ghostFun = -3 *( 1./ (1 + min([util.manhattanDistance(newPos,g.getPosition()) \
+            for g in newGhostStates])))
+        capsFun = 1 * (1./(1+min(foodList+[10**100])))
+        utilFun = ghostFun + ateCapsule + capsFun
+        #print ghostFun, ateCapsule, capsFun, utilFun
+        return utilFun
 
 # Abbreviation
 better = betterEvaluationFunction
