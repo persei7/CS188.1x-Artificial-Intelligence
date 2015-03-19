@@ -281,7 +281,54 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
           legal moves.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        self.numAgents = gameState.getNumAgents()
+        self.numLayers = self.depth * self.numAgents
+        
+        res = self.value(gameState)
+        #print res
+        return res[1]
+    
+    
+    def value(self, state, i=0):     
+        #print i, self.numAgents, self.numLayers
+        agentIndex = i % self.numAgents
+        if i == self.numLayers or state.isLose() or state.isWin():
+            return (self.evaluationFunction(state), None)
+        
+        elif agentIndex == 0:
+            #pacman
+            return self.maxValue(state, i)
+        else:
+            #ghosts
+            return self.minValue(state, i)
+            
+    def maxValue(self, state, i):
+        max_v = (-float("inf"), None)
+        agentIndex = i % self.numAgents
+        actions = state.getLegalActions(agentIndex)
+        #print actions
+        if len(actions) == 0:
+            return (self.evaluationFunction(state), None)
+        else:
+            for a in actions:
+                successor = state.generateSuccessor(agentIndex, a)
+                v  = self.value(successor, i+1)
+                if v[0] > max_v[0]:
+                    max_v = (v[0], a)
+        return max_v
+        
+    def minValue(self, state, i):
+        agentIndex = i % self.numAgents
+        actions = state.getLegalActions(agentIndex)
+        #print actions
+        if len(actions) == 0:
+            return (self.evaluationFunction(state), None)
+        else:
+            vs = []
+            for a in actions:
+                successor = state.generateSuccessor(agentIndex, a)                
+                vs.append(self.value(successor, i+1))
+        return (sum(v[0] for v in vs)/float(len(vs)), None)
 
 def betterEvaluationFunction(currentGameState):
     """
