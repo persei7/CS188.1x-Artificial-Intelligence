@@ -338,17 +338,30 @@ def betterEvaluationFunction(currentGameState):
       DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
-        x, y = newPos
-        foodList = map(lambda f: util.manhattanDistance(newPos,f), newFood)
-        #print foodList
-        #print min(foodList)
-        ghostFun = -3 *( 1./ (1 + min([util.manhattanDistance(newPos,g.getPosition()) \
-            for g in newGhostStates])))
-        capsFun = 1 * (1./(1+min(foodList+[10**100])))
-        utilFun = ghostFun + ateCapsule + capsFun
-        #print ghostFun, ateCapsule, capsFun, utilFun
-        return utilFun
+    pos = currentGameState.getPacmanPosition()
+    food = currentGameState.getFood().asList()
+    foodCount = currentGameState.getNumFood()
+    ghostStates = currentGameState.getGhostStates()
+    scaredTimes = [ghostState.scaredTimer for ghostState in ghostStates]
+    ghostDistances = [util.manhattanDistance(pos, ghost.getPosition()) \
+                        for ghost in ghostStates]
+    
+    if currentGameState.isLose():
+        return -99999
+    if currentGameState.isWin():
+        return 99999
+    x, y = pos
+    foodList = map(lambda f: util.manhattanDistance(pos,f), food)    
+    ghostFun = -1 *( 1./ (1 + min([util.manhattanDistance(pos,g.getPosition()) \
+            for g in ghostStates])))
+    capsFun = 1 * (1./(1+min(foodList+[10**100]))) -foodCount
+    utilFun = ghostFun  + capsFun
+    
+    
+    #print utilFun
+    return utilFun
 
+    
 # Abbreviation
 better = betterEvaluationFunction
 
